@@ -24,6 +24,18 @@ mpt_logf_formatter=logging.Formatter('%(asctime)s - %(levelname)s : %(message)s'
 mpt_logf.setFormatter(mpt_logf_formatter)
 mpt_log.addHandler(mpt_logf)
 
+try:
+   import skued
+   SKUED=True
+except:
+   SKUED=False
+
+try: 
+   import ase
+   ASE=True
+   print(ASE)
+except:
+   ASE=False
 
 def info():
     """
@@ -55,9 +67,9 @@ def info():
         except ImportError:
             print('%10s %10s Not Found' % (modui, ''))
 
-    try:
+    if ASE:
         import ase
         #from ase import version as ase_version
         print('%10s %10s   %s' % ('ase', ase.__version__, ase.__path__[0]))
-    except ImportError:
+    else:
         print('%10s %10s Not Found' % ('ase', ''))

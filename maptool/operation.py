@@ -15,7 +15,7 @@ from maptool.utils import *
 from maptool.substrate_matcher import make_connect,get_subs
 from maptool.read_structure import readstructure
 from maptool.data_io import write_col_data,json_store
-from maptool.random_operation import RandomStructure,RandomMolecule,random_purturbation_index,\
+from maptool.random_operation import get_random_structure,random_purturbation_index,\
                                      random_disturbing_pos,random_disturbing_lat
 
 def random_operation():
@@ -32,7 +32,7 @@ def random_operation():
     assert choice in [1,2,3,4]
 
     if choice==1:
-       pass
+       get_random_structure()
     elif choice==2:
        random_purturbation_index()
     elif choice==3:
@@ -72,6 +72,7 @@ def build_operation():
     print('{} >>> {}'.format('1','build supercell'))
     print('{} >>> {}'.format('2','build nanotube'))
     print('{} >>> {}'.format('3','build absorption configuration'))
+    wait_sep()
     in_str=""
     while in_str=="":
        in_str=input().strip()
@@ -217,12 +218,12 @@ def cleave_operation():
     if choice==1:
         print(" input the miller index, minimum size in angstroms of layers containing atomssupercell")
         print(" and Minimize size in angstroms of layers containing vacuum like this:")
-        print(' a 1 0 0 | 5 | 5')
+        print(' 1 0 0 | 5 | 5')
         print(' it means miller index is [1,0,0]')
         print(" min_slab_size is 5 Ang ")
         print(" min_vacum_size is 5 Ang ")
         print(" or like this : ")
-        print(' b 2 | 5 | 5')
+        print(' 2 | 5 | 5')
         print(' it will generate all slab with miller index less than 2')
          
         def generate_selected_slab(in_str):
@@ -251,10 +252,13 @@ def cleave_operation():
         in_str=""
         while in_str=="":
            in_str=input().strip()
-        if in_str.strip().startswith('a'):
-           generate_selected_slab(in_str[1:])
-        elif in_str.strip().startswith('b'):
-           generate_all_slab(in_str[1:])
+        len_para=len(in_str.split('|')[0].split())
+        #if in_str.strip().startswith('a'):
+        if len_para==3:
+           generate_selected_slab(in_str)
+        #elif in_str.strip().startswith('b'):
+        elif len_para==1:
+           generate_all_slab(in_str)
         else:
            print("unknow format")
            os._exit()
@@ -335,7 +339,7 @@ def move_to_zcenter(struct):
     return Structure(struct.lattice,struct.species,frac)
     
 def twoD_operation():
-    sepline(ch='2D structure operation',sp='=')
+    #sepline(ch='2D structure operation',sp='=')
     print('your choice ?')
     print('{} >>> {}'.format('1','build rippled structure'))
     print('{} >>> {}'.format('2','build multi-layered structure'))
@@ -649,7 +653,8 @@ def get_xrd():
     struct=readstructure()
     xrd=XRDCalculator()
   
-    xrd_data=xrd.get_xrd_pattern(struct)
+#    xrd_data=xrd.get_xrd_pattern(struct)
+    xrd_data=xrd.get_pattern(struct)
     jxrd_data=jsanitize(xrd_data.as_dict())
     fname='XRD.json'
     proc_str="Saving data to "+ fname +" File ..."
@@ -667,6 +672,6 @@ def get_xrd():
     fname='XRD.png'
     proc_str="Saving plot to "+ fname +" File ..."
     procs(proc_str,3,sp='-->>')
-    plt=xrd.get_xrd_plot(struct)
+    plt=xrd.get_plot(struct)
     plt.savefig(fname,format='png')
 

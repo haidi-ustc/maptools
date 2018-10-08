@@ -13,7 +13,7 @@ def hello():
     box_center(ch='')
     box_center(ch='Written by Wang haidi')
     box_center(ch='URL  https://github.com/haidi-ustc')
-    box_center(ch='Bug report:(haidi@mail.ustc.edu.cn)')
+    box_center(ch='Bug reports:(haidi@mail.ustc.edu.cn)')
     box_center(ch='-',fill='-',sp="+")
 
 def byebye():
@@ -22,6 +22,7 @@ def byebye():
     box_center(ch="Thanks for using "+NAME)
     box_center(ch="Have a nice day!!!")
     box_center(ch="Please cite: Nanoscale 9 (2), 850-855")
+    box_center(ch="https://scholar.google.com/citations?hl=zh-CN&user=9PPScBEAAAAJ")
     box_center(ch='-',fill='-',sp="+")
 
 def print_menu():
@@ -46,19 +47,19 @@ def print_menu():
     print('{} >>> {}'.format('c2','analysis output files'))
 #    print('{} >>> {}'.format('c3','summary output files'))
 
-    sepline(ch=" vasp auto calculation ",sp='=')
-    print('{} >>> {}'.format('d1','optimize structure'))
-    print('{} >>> {}'.format('d2','calculate band structure'))
-    print('{} >>> {}'.format('d3','calculate band structure HSE06'))
-    print('{} >>> {}'.format('d4','calculate dos'))
-    print('{} >>> {}'.format('d5','calculate dos by HSE06'))
-    print('{} >>> {}'.format('d6','calculate elastic properties'))
-    print('{} >>> {}'.format('d7','calculate phonon'))
-    print('{} >>> {}'.format('d8','execute MD simulation'))
+    #sepline(ch=" vasp auto calculation ",sp='=')
+    #print('{} >>> {}'.format('d1','optimize structure'))
+    #print('{} >>> {}'.format('d2','calculate band structure'))
+    #print('{} >>> {}'.format('d3','calculate band structure HSE06'))
+    #print('{} >>> {}'.format('d4','calculate dos'))
+    #print('{} >>> {}'.format('d5','calculate dos by HSE06'))
+    #print('{} >>> {}'.format('d6','calculate elastic properties'))
+    #print('{} >>> {}'.format('d7','calculate phonon'))
+    #print('{} >>> {}'.format('d8','execute MD simulation'))
 
-    sepline(ch=" on line extraction ",sp='=')
+    sepline(ch=" online retrieve ",sp='=')
     print('{} >>> {}'.format('e1','get band/dos by mp-ID'))
-    print('{} >>> {}'.format('e2','get structure from materials.org'))
+    print('{} >>> {}'.format('e2','get structure from materialsproject database'))
     print('{} >>> {}'.format('e3','get properties by mp-ID'))
     sepline(ch="=",sp='=')
 

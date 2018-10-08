@@ -1,5 +1,7 @@
 #!/usr/bin/env python
+from   __future__ import division, unicode_literals, print_function
 from six.moves import input
+import os
 import random
 import numpy as np
 from pymatgen import Structure,Molecule,Specie,Composition,Lattice
@@ -7,58 +9,49 @@ from maptool.read_structure import readstructure
 from maptool.utils import *
 from maptool.mathematics import apply_rotation
 from maptool.function import is_pbc
+from maptool.external.pyxtal.crystal import random_crystal
 
-class RandomStructure(Structure):
 
-    def __init__(self,composition,method='scaling',stabiliztion_number=3,paral=5,periodic=True,factor_opptimal_volume=8):
+def get_random_structure():
+    print("input the formula of structure like this: ")
+    print("(Fe3O4)4")
+    print("or input the formula and spacegroup like this ")
+    print("Si4O8  20")
+    wait_sep()
+    in_str=""
+    while in_str=="":
+       in_str=input().strip().split()
     
-        self._comp=Composition(composition)
-        self._method=method
-        self.method_list=['scaling','stretching','pseudorandom']
-    
-    @property
-    def composition(self):
-        return self._comp
-    
-    @property
-    def method(self):
-        return self._method
+    if len(in_str)==1: 
+       spgRange=[1,230]
+       tag=False
+    elif len(in_str)==2:
+       spgRange=[int(in_str[1]),int(in_str[1])+1]
+       tag=True
+    else:
+       print("unknow format")
+       os._exit()
 
-    @staticmethod
-    def get_one_random_structure():
-        pass
-
-    def get_random_structures(number):
-        structs=[]
-        for i in range(number):
-            structs.append(get_one_random_structure())
-        return structs
-
-class RandomMolecule(Molecule):
-
-    def __init__(self,composition,method='scaling',stabiliztion_number=3,paral=5,periodic=True,factor_opptimal_volume=8):
-    
-        self._comp=Composition(composition)
-        self._method=method
-        self.method_list=['scaling','stretching','pseudorandom']
-    
-    @property
-    def composition(self):
-        return self._comp
-    
-    @property
-    def method(self):
-        return self._method
-
-    @staticmethod
-    def get_one_random_molecule():
-        pass
-
-    def get_random_molecules(number):
-        molecules=[]
-        for i in range(number):
-            molecules.append(get_one_random_structure())
-        return molecules
+    comp=Composition(in_str[0])
+    elem=[el.symbol for el in comp]
+    num_atom=[int(comp[el]) for el in elem]
+    i=124456
+    scale=1.5
+    while True:
+        random.seed(i)
+        spg=np.random.randint(spgRange[0],spgRange[1])
+        print("try space group %s"%(spg))
+        i+=1
+        rc=random_crystal(spg,elem, num_atom, scale)
+        pmg_structure=rc.prim_struct
+        if pmg_structure is not None:
+           print("Generate random structure with spg: %d  natom: %d"%(spg, len(pmg_structure)))
+           print(pmg_structure)
+           pmg_structure.to('poscar','random_spg_'+str(spg)+'.vasp')
+           return
+        if tag:
+           print("Failed to generate structure with spg: %d"%(spg)) 
+           return 
 
 def random_purturbation_index():
     if is_pbc():

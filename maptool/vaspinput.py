@@ -151,7 +151,7 @@ paral_paras={
 # you have to set a proper value for NPAR ~ sqrt(core)
 ''',
 
- 'NPAR' : 4
+ 'NPAR' : 2
 }
 
 hse_paras={
@@ -335,7 +335,7 @@ def generate_incar(struct,dirname='.',encut=1.5):
     elec_relax1['ENCUT']=prop_encut
    
     tip='\n'+\
-    'for every letter you can add another letters for extra parameters\n'+\
+    'for every letter you can append another letters for extra parameters\n'+\
     'The corresponding list are:                                      \n'+\
     'a:  SPIN                                                         \n'+\
     'b:  SOC                                                          \n'+\
@@ -384,11 +384,17 @@ def generate_incar(struct,dirname='.',encut=1.5):
     choice=in_str[0]
     in_str=''.join(in_str.split())
 #    assert choice in range(1,19)
-    ref_incar=MPRelaxSet(struct).incar
+    ref_incar=MITRelaxSet(struct).incar
+    #print(ref_incar)
     ref_incar_cite={}
     spin_paras['MAGMOM']=ref_incar['MAGMOM']
-    LDAU_paras['LDAUJ']=ref_incar['LDAUJ']
-    LDAU_paras['LDAUL']=ref_incar['LDAUL']
+    try:
+       LDAU_paras['LDAUJ']=ref_incar['LDAUJ']
+       LDAU_paras['LDAUL']=ref_incar['LDAUL']
+    except:
+       LDAU_paras['LDAUJ']=None
+       LDAU_paras['LDAUL']=None
+
     elec_relax1['LREAL']=ref_incar['LREAL']
 
     def parse_extra_incar(in_str,modify_val=None):
@@ -410,7 +416,7 @@ def generate_incar(struct,dirname='.',encut=1.5):
     elif choice=='b':
        ion_relax['NSW']=0
        elec_relax1['EDIFF']=ediff_oth
-       output_paras['LCHCAR']=True
+       output_paras['LCHGARG']=True
        output_paras['LWAVE']=True
        for dict_paras in basic_paras:
            incar,comment=Incar.from_dict(eval(dict_paras))
@@ -441,7 +447,7 @@ def generate_incar(struct,dirname='.',encut=1.5):
     elif choice=='e':
        ion_relax['NSW']=0
        elec_relax1['EDIFF']=ediff_oth
-       output_paras['LCHCAR']=True
+       output_paras['LCHGARG']=True
        output_paras['LELF']=True
        for dict_paras in basic_paras:
            incar,comment=Incar.from_dict(eval(dict_paras))
@@ -452,7 +458,7 @@ def generate_incar(struct,dirname='.',encut=1.5):
     elif choice=='f':
        ion_relax['NSW']=0
        elec_relax1['EDIFF']=ediff_oth
-       output_paras['LCHCAR']=True
+       output_paras['LCHGARG']=True
        output_paras['LAECHG']=True
        for dict_paras in basic_paras:
            incar,comment=Incar.from_dict(eval(dict_paras))
@@ -488,7 +494,7 @@ def generate_incar(struct,dirname='.',encut=1.5):
     elif choice=='i':
        ion_relax['NSW']=0
        elec_relax1['EDIFF']=ediff_oth
-       output_paras['LCHCAR']=True
+       output_paras['LCHGARG']=True
        output_paras['LVTOT']=True
        for dict_paras in basic_paras:
            incar,comment=Incar.from_dict(eval(dict_paras))
@@ -501,7 +507,7 @@ def generate_incar(struct,dirname='.',encut=1.5):
        ion_relax['NSW']=0
        start_paras['ISTART']=1
        elec_relax1['EDIFF']=ediff_oth
-       output_paras['LCHCAR']=True
+       output_paras['LCHGARG']=True
        for dict_paras in basic_paras:
            incar,comment=Incar.from_dict(eval(dict_paras))
            incar_str+=incar.get_string(pretty=True,comment=comment)
@@ -513,7 +519,7 @@ def generate_incar(struct,dirname='.',encut=1.5):
        ion_relax['NSW']=0
        start_paras['ISTART']=1
        elec_relax1['EDIFF']=ediff_oth
-       output_paras['LCHCAR']=True
+       output_paras['LCHGARG']=True
        for dict_paras in basic_paras:
            incar,comment=Incar.from_dict(eval(dict_paras))
            incar_str+=incar.get_string(pretty=True,comment=comment)

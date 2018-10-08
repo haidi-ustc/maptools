@@ -35,6 +35,9 @@ def readstructure(crystal=True,molecule=False,filename=None,multi_files=False,ca
               mpt_log.debug("linke file for %s is %s" % (fname,nfname))
               fname=nfname
               struct=MStructure.from_file(fname)
+
+              print(struct)
+              print(type(struct))
               if cano:
                  struct.canonical_form()
               os.unlink(fname)

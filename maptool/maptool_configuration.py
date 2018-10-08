@@ -515,12 +515,13 @@ class MMolecule(Molecule):
 
 if __name__=='__main__':
 
-     print('*'*30+'Molecule'+'*'*30)
-     mol= MMolecule.from_file('h2o.xyz')
-     print(mol)
-     print('-------canonical------------')
-     mol.canonical_form()
-     print(mol)
+     
+     #print('*'*30+'Molecule'+'*'*30)
+     #mol= MMolecule.from_file('h2o.xyz')
+     #print(mol)
+     #print('-------canonical------------')
+     #mol.canonical_form()
+     #print(mol)
      print('*'*30+'Crystal'+'*'*30)
      st=MStructure.from_file('POSCAR')
      print(st)

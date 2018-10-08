@@ -90,7 +90,12 @@ def structures_difference(distance_tolerance=0.1,rcut=30):
        structs,fnames=readstructure(crystal=True,molecule=False,multi_files=True,cano=True)
     else:
        structs,fnames=readstructure(crystal=False,molecule=True,multi_files=True,cano=True) 
-    
+   
+    for i in structs:
+        print(i)
+    for i in fnames:
+        print(i)
+
     n_struct=len(structs)
     proc_str="Total Number of Files are : "+str(n_struct)
     procs(proc_str,0,sp='-->>')

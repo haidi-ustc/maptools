@@ -36,7 +36,7 @@ def main():
 
                          )
     parser.add_option("--struct_operation",dest="struct_oper", action="store_true",help='structure operation')
-    parser.add_option( "--struct_analysis", dest="struct_ana", action="store_true",help='structure analysis')
+    parser.add_option("--struct_analysis", dest="struct_ana", action="store_true",help='structure analysis')
     parser.add_option("--vasp_inout", dest="vasp_inout", action="store_true",help='create vasp input and analysis vasp output')
     parser.add_option("--vasp_auto", dest="vasp_auto", action="store_true",help='vasp automatic calculation')
     parser.add_option("-l","--logo", dest="Is_logo", action="store_true",help='show logo of pymat4vasp')
@@ -64,6 +64,7 @@ rm -f IBZKPT CHG* CONTCAR DOSCAR EIGENVAL OSZICAR OUTCAR PCDAT XDATCAR WAVECAR  
         box_center(ch='-',fill='-',sp="+")
         version()
         box_center(ch='-',fill='-',sp="+")
+
     if options.Is_logo:
         options.Is_run=False
         box_center(ch='-',fill='-',sp="+")

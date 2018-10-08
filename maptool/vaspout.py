@@ -39,7 +39,7 @@ def total_dos():
       procs(proc_str,0,sp='-->>')
       proc_str="Writting TDOS.dat File ..."
       TDOSUP=tdos.densities[Spin.up]
-      TDOSDOWN=tdos.densities[Spin.up]
+      TDOSDOWN=tdos.densities[Spin.down]
       ETDOS=np.vstack((E,TDOSUP,TDOSDOWN))
       head_line="#%(key1)+12s%(key2)+12s%(key3)+12s"%{'key1':'Energy(eV)','key2':'SpinUp','key3':'SpinDown'}
       write_col_data('TDOS.dat',ETDOS.T,head_line)
@@ -47,7 +47,7 @@ def total_dos():
       proc_str="Writting IDOS.dat File ..."
       procs(proc_str,3,sp='-->>')
       IDOSUP=idos.densities[Spin.up]
-      IDOSDOWN=idos.densities[Spin.up]
+      IDOSDOWN=idos.densities[Spin.down]
       EIDOS=np.vstack((E,IDOSUP,IDOSDOWN))
       head_line="#%(key1)+12s%(key2)+12s%(key3)+12s"%{'key1':'Energy(eV)','key2':'IntSpinUp','key3':'IntSpinDown'}
       write_col_data('IDOS.dat',EIDOS.T,head_line)
@@ -506,7 +506,7 @@ def charge_density():
    chg = CHGCAR.from_file("CHG")
    proc_str="Writing Charge Density To CHARGE.vasp File ..."
    procs(proc_str,2,sp='-->>')
-   chg.write_file('CHGARGE.vasp')
+   chg.write_file('CHGARGE.vasp','total')
 
 class CHGCAR(VolumetricData):
     """
