@@ -1,11 +1,16 @@
 #!/usr/bin/env python
 import os
-from pymatgen import MPRester
-from pymatgen.electronic_structure.plotter import DosPlotter,BSPlotter
 from six.moves import input
 from maptool.data_io import json_store
 from maptool.vaspout import check_matplotlib
 from maptool.utils import procs,sepline,wait_sep
+
+from pymatgen import MPRester
+from pymatgen.electronic_structure.plotter import DosPlotter,BSPlotter
+from pymatgen.entries.compatibility import MaterialsProjectCompatibility
+from pymatgen.entries.computed_entries import ComputedEntry
+from pymatgen.analysis.phase_diagram import *
+
 
 web="materials.org"
 
@@ -133,6 +138,35 @@ def online_get_structure():
                 struct.to(fmt='cif',filename=filename)
     else:
         print('unknow choice')
+
+def online_get_phase_graph():
+    mpr=check_apikey()
+    compat=MaterialsProjectCompatibility()
+    print("input the elements list")
+    wait_sep()
+    in_str=""
+    while in_str=="":
+          in_str=input().strip()
+    elements=in_str.split()
+    web="materials.org"
+    proc_str="Reading Data From "+ web +" ..."
+    step_count=1
+    procs(proc_str,step_count,sp='-->>')
+    unprocessed_entries=mpr.get_entries_in_chemsys(elements)
+    processed_entries=compat.process_entries(unprocessed_entries)
+    pd=PhaseDiagram(processed_entries)
+    pdp=PDPlotter(pd,show_unstable=True)
+    try:
+       pdp.show()
+    except:
+       pass
+    finally:
+       step_count+=1
+       filename='phase.png'
+       proc_str="Writing Data to "+filename +" File..."
+       procs(proc_str,step_count,sp='-->>')
+       pdp.write_image(filename) 
+
 
 def online_get_properties():
     mpr=check_apikey()

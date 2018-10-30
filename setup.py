@@ -10,7 +10,7 @@ default_prefix='maptool'
 setup(
     name="maptool",
     packages=find_packages(),
-    version="0.1.0",
+    version="0.1.1",
     setup_requires=['pymatgen'],
     install_requires=["numpy>=1.9", "six", "requests", "ruamel.yaml>=0.15.6",
                       "monty>=0.9.6", "scipy>=1.0.0", "pydispatcher>=2.0.5",

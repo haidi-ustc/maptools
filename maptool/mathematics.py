@@ -4,6 +4,7 @@ import itertools
 import math
 from fractions import gcd
 from math import cos, sin, sqrt
+from scipy.ndimage.filters import gaussian_filter1d
 import numpy as np
 
 __author__ = "Guillermo Avendano-Franco"
@@ -12,6 +13,7 @@ __version__ = "0.17.3"
 __email__ = "gufranco@mail.wvu.edu"
 __status__ = "Development"
 __date__ = "March 7, 2017"
+
 
 
 def length_vector(v):
@@ -83,7 +85,7 @@ def unit_vectors(m):
     :rtype : numpy.ndarray
 
     Example
-    >>> from pychemia.utils.mathematics import *
+    >>> from maptool.mathematics import *
 
     >>> b = unit_vectors([[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 0, 0], [0, 0, 2]])
 
@@ -1033,3 +1035,16 @@ def gea_orthogonal_from_angles(angles_list):
             c[:-1, :-1] = b
             b = c
     return b
+
+
+def smear(data, sigma=0.1):
+    """
+    Apply Gaussian smearing to spectrum y value.
+
+    Args:
+        sigma: Std dev for Gaussian smear function
+    """
+    diff = [data[0, i + 1] - data[0, i] for i in range(np.shape(data)[0] - 1)]
+    avg_x_per_step = np.sum(diff) / len(diff)
+    data[1, :] = gaussian_filter1d(data[1, :], sigma / avg_x_per_step)
+    return data

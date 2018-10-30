@@ -17,6 +17,7 @@ from maptool.read_structure import readstructure
 from maptool.data_io import write_col_data,json_store
 from maptool.random_operation import get_random_structure,random_purturbation_index,\
                                      random_disturbing_pos,random_disturbing_lat
+from   maptool.mathematics import smear
 
 def random_operation():
     print('your choice ?')
@@ -208,8 +209,8 @@ def cleave_operation():
         return
     print('your choice ?')
     print('{} >>> {}'.format('1','cleave surface'))
-    print('{} >>> {}'.format('2','cleave ball'))
-    print('{} >>> {}'.format('3','cleave ball shell'))
+    print('{} >>> {}'.format('2','cleave sphere cluster'))
+    print('{} >>> {}'.format('3','cleave shell structure'))
     wait_sep()
     in_str=""
     while in_str=="":
@@ -264,9 +265,54 @@ def cleave_operation():
            os._exit()
  
     elif choice==2:
-       pass   
+        print(" input the center atom index, sphere radius and vacuum layer thickness")
+        print(' 1 3.5 15')
+        print(' it means the sphere will be selected according to the 1st atom')
+        print(" with the radius equals 5Ang, and vacuum layer thickness is 15 Ang")
+        wait_sep()
+        in_str=""
+        while in_str=="":
+           in_str=input().strip()
+        para=in_str.split()
+        center_atom=int(para[0])-1 
+        radius=float(para[1])
+        vacuum=float(para[2])
+        center_coord=struct[center_atom].coords
+        sites=struct.get_neighbors_in_shell(center_coord,0,radius)
+        coords=[site[0].coords for site in sites]
+        species=[site[0].specie for site in sites]
+        mol=Molecule(coords=coords,species=species)
+        max_dist=np.max(mol.distance_matrix)
+        a=b=c=max_dist+vacuum
+        box_struct=mol.get_boxed_structure(a,b,c)
+        file_name="sphere.vasp"
+        box_struct.to(filename=file_name,fmt='poscar')
     elif choice==3:
-       pass
+        print(" input the center atom index, start radius, shell thickness and")
+        print(" vacuum layer thickness")
+        print(' 1 5 10  15')
+        print(' it means the ball shell will be selected according to the 1st atom')
+        print(" with the 5< r <15Ang, and vacuum layer thickness is 15 Ang")
+        wait_sep()
+        in_str=""
+        while in_str=="":
+           in_str=input().strip()
+        para=in_str.split()
+        center_atom=int(para[0])-1 
+        radius=float(para[1])
+        shell=float(para[2])
+        vacuum=float(para[3])
+        center_coord=struct[center_atom].coords
+        sites=struct.get_neighbors_in_shell(center_coord,radius,shell)
+        coords=[site[0].coords for site in sites]
+        species=[site[0].specie for site in sites]
+        mol=Molecule(coords=coords,species=species)
+        max_dist=np.max(mol.distance_matrix)
+        a=b=c=max_dist+vacuum
+        box_struct=mol.get_boxed_structure(a,b,c)
+        file_name="shell.vasp"
+        box_struct.to(filename=file_name,fmt='poscar')
+
     else:
         print("unkown choice")
         return
@@ -662,6 +708,23 @@ def get_xrd():
     json_store(jxrd_data,fname)
 
     data=np.vstack((xrd_data.x,xrd_data.y)).T
+    
+    margin=10.
+    ds=xrd_data.x[0]-margin
+    de=xrd_data.x[-1]+margin
+    tmp_data=[ds]+xrd_data.x.tolist()+[de]
+    tmp_data1=np.diff(tmp_data).tolist()
+    tmp_data2=np.array([0]+np.cumsum(tmp_data1).tolist())
+    tmp_data3=tmp_data2/tmp_data2[-1]
+    x_data=np.linspace(ds,de,10000)
+    y_data=np.zeros((len(x_data)))
+    for i in range(1,len(tmp_data3)-1):
+      index=int(tmp_data3[i]*10000)
+      y_data[index]=xrd_data.y[i-1]  
+
+    data=np.vstack((x_data,y_data))
+    data=(smear(data, sigma=0.1)).T
+
     head_line="#%(key1)+12s %(key2)+12s"%{'key1':'2theta','key2':'Intensity'}
     fname='XRD.dat'
     proc_str="Saving data to "+ fname +" File ..."

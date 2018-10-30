@@ -61,6 +61,7 @@ def print_menu():
     print('{} >>> {}'.format('e1','get band/dos by mp-ID'))
     print('{} >>> {}'.format('e2','get structure from materialsproject database'))
     print('{} >>> {}'.format('e3','get properties by mp-ID'))
+    print('{} >>> {}'.format('e4','get phase graph'))
     sepline(ch="=",sp='=')
 
 #TODO

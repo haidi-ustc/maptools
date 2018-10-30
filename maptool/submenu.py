@@ -3,7 +3,7 @@ from __future__ import unicode_literals, print_function
 from six.moves import input
 from maptool.operation import    random_operation, covert_operation,cleave_operation, strain_operation,\
                                  twoD_operation, build_operation,get_xrd
-from maptool.online_extract import  online_get_banddos, online_get_structure, online_get_properties
+from maptool.online_extract import  online_get_banddos, online_get_structure, online_get_properties,online_get_phase_graph
 from maptool.read_structure import readstructure
 from maptool.utils import sepline,wait_sep,procs
 from maptool.describe_file import *
@@ -143,7 +143,8 @@ def select_function(choice):
        online_get_structure()
     elif choice=="e3":
        online_get_properties()
-
+    elif choice=="e4":
+       online_get_phase_graph()
     elif choice=="88":
          return
     else:

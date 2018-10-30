@@ -16,7 +16,7 @@ from   time import time
 
 __author__    = "Haidi Wang"
 __copyright__ = "Copyright 2018"
-__version__   = "0.1.0"
+__version__   = "0.1.1"
 __maintainer__= "Haidi Wang"
 __email__     = "haidi@mail.ustc.edu.cn"
 __status__    = "Development"

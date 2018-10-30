@@ -25,5 +25,5 @@ def logo():
      for i in range(len(s)):
          box_center(ch=s[i])
 def version():
-     version=" VERSION 0.1.0 (2018.2.26) "
-     box_center(ch=version)
+    version=" VERSION 0.1.1 (2018.10.29) "
+    box_center(ch=version)

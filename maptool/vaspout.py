@@ -198,131 +198,132 @@ def projected_dos():
       write_col_data(filename,contrib,head_line)
 
 def band_structure():
-   check_matplotlib()
-   step_count=1
+    check_matplotlib()
+    step_count=1
 
-   filename='vasprun.xml'
-   check_file(filename)
-   proc_str="Reading Data From "+ filename +" File ..."
-   procs(proc_str,step_count,sp='-->>')
-   vsr=Vasprun(filename)
+    filename='vasprun.xml'
+    check_file(filename)
+    proc_str="Reading Data From "+ filename +" File ..."
+    procs(proc_str,step_count,sp='-->>')
+    vsr=Vasprun(filename)
 
-   step_count+=1
-   filename='KPOINTS'
-   check_file(filename)
-   proc_str="Reading Data From "+ filename +" File ..."
-   procs(proc_str,step_count,sp='-->>')
-   bands = vsr.get_band_structure(filename, line_mode=True, efermi=vsr.efermi)
+    step_count+=1
+    filename='KPOINTS'
+    check_file(filename)
+    proc_str="Reading Data From "+ filename +" File ..."
+    procs(proc_str,step_count,sp='-->>')
+    bands = vsr.get_band_structure(filename, line_mode=True, efermi=vsr.efermi)
 
-   step_count+=1
-   filename='OUTCAR'
-   check_file(filename)
-   proc_str="Reading Data From "+ filename +" File ..."
-   procs(proc_str,step_count,sp='-->>')
-   outcar=Outcar('OUTCAR')
-   mag=outcar.as_dict()['total_magnetization']
+    step_count+=1
+    filename='OUTCAR'
+    check_file(filename)
+    proc_str="Reading Data From "+ filename +" File ..."
+    procs(proc_str,step_count,sp='-->>')
+    outcar=Outcar('OUTCAR')
+    mag=outcar.as_dict()['total_magnetization']
 
-   if vsr.is_spin:
-      proc_str="This Is a Spin-polarized Calculation."
-      procs(proc_str,0,sp='-->>')
-      tdos=vsr.tdos
-      SpinUp_gap=tdos.get_gap(spin=Spin.up) 
-      cbm_vbm_up=tdos.get_cbm_vbm(spin=Spin.up)
-      SpinDown_gap=tdos.get_gap(spin=Spin.down) 
-      cbm_vbm_down=tdos.get_cbm_vbm(spin=Spin.up)
+    if vsr.is_spin:
+       proc_str="This Is a Spin-polarized Calculation."
+       procs(proc_str,0,sp='-->>')
+       tdos=vsr.tdos
+       SpinUp_gap=tdos.get_gap(spin=Spin.up) 
+       cbm_vbm_up=tdos.get_cbm_vbm(spin=Spin.up)
+       SpinDown_gap=tdos.get_gap(spin=Spin.down) 
+       cbm_vbm_down=tdos.get_cbm_vbm(spin=Spin.up)
 
-      if SpinUp_gap > min_gap and SpinDown_gap > min_gap:
-         is_metal=False
-         is_semimetal=False
-      elif SpinUp_gap > min_gap and SpinDown_gap < min_gap:
-         is_metal=False
-         is_semimetal=True
-      elif SpinUp_gap < min_gap and SpinDown_gap > min_gap:
-         is_metal=False
-         is_semimetal=True
-      elif SpinUp_gap < min_gap and SpinDown_gap < min_gap:
-         is_metal=True
-         is_semimetal=False
-         
-      if is_metal:   
-         proc_str="This Material Is a Metal."
-         procs(proc_str,0,sp='-->>')
-      if not is_metal and is_semimetal:
-         proc_str="This Material Is a Semimetal."
-         procs(proc_str,0,sp='-->>')
-      else:
-         proc_str="This Material Is a Semiconductor."
-         procs(proc_str,0,sp='-->>')
-         proc_str="Total magnetization is "+str(mag)
-         procs(proc_str,0,sp='-->>')
-         if mag > min_mag:
-            proc_str="SpinUp  : vbm=%f eV cbm=%f eV gap=%f eV"%(cbm_vbm_up[1],cbm_vbm_up[0],SpinUp_gap)
-            procs(proc_str,0,sp='-->>')
-            proc_str="SpinDown: vbm=%f eV cbm=%f eV gap=%f eV"%(cbm_vbm_down[1],cbm_vbm_down[0],SpinUp_gap)
-            procs(proc_str,0,sp='-->>')
-         else:
-            proc_str="SpinUp  : vbm=%f eV cbm=%f eV gap=%f eV"%(cbm_vbm_up[1],cbm_vbm_up[0],SpinUp_gap)
-            procs(proc_str,0,sp='-->>')
-      step_count+=1
-      filename="BAND.dat"
-      proc_str="Writting Band Structure Data to "+ filename +" File ..."
-      procs(proc_str,step_count,sp='-->>')
-      band_data_up=bands.bands[Spin.up]
-      band_data_down=bands.bands[Spin.down]
-      y_data_up=band_data_up.reshape(1,band_data_up.shape[0]*band_data_up.shape[1])[0]-vsr.efermi #shift fermi level to 0
-      y_data_down=band_data_down.reshape(1,band_data_down.shape[0]*band_data_down.shape[1])[0]-vsr.efermi #shift fermi level to 0
-      x_data=np.array(bands.distance*band_data_up.shape[0])
-      data=np.vstack((x_data,y_data_up,y_data_down)).T
-      head_line="#%(key1)+12s%(key2)+13s%(key3)+15s"%{'key1':'K-Distance','key2':'UpEnergy(ev)','key3':'DownEnergy(ev)'}
-      write_col_data(filename,data,head_line,band_data_up.shape[1])
+       if SpinUp_gap > min_gap and SpinDown_gap > min_gap:
+          is_metal=False
+          is_semimetal=False
+       elif SpinUp_gap > min_gap and SpinDown_gap < min_gap:
+          is_metal=False
+          is_semimetal=True
+       elif SpinUp_gap < min_gap and SpinDown_gap > min_gap:
+          is_metal=False
+          is_semimetal=True
+       elif SpinUp_gap < min_gap and SpinDown_gap < min_gap:
+          is_metal=True
+          is_semimetal=False
+          
+       if is_metal:   
+          proc_str="This Material Is a Metal."
+          procs(proc_str,0,sp='-->>')
+       if not is_metal and is_semimetal:
+          proc_str="This Material Is a Semimetal."
+          procs(proc_str,0,sp='-->>')
+       else:
+          proc_str="This Material Is a Semiconductor."
+          procs(proc_str,0,sp='-->>')
+          proc_str="Total magnetization is "+str(mag)
+          procs(proc_str,0,sp='-->>')
+          if mag > min_mag:
+             proc_str="SpinUp  : vbm=%f eV cbm=%f eV gap=%f eV"%(cbm_vbm_up[1],cbm_vbm_up[0],SpinUp_gap)
+             procs(proc_str,0,sp='-->>')
+             proc_str="SpinDown: vbm=%f eV cbm=%f eV gap=%f eV"%(cbm_vbm_down[1],cbm_vbm_down[0],SpinUp_gap)
+             procs(proc_str,0,sp='-->>')
+          else:
+             proc_str="SpinUp  : vbm=%f eV cbm=%f eV gap=%f eV"%(cbm_vbm_up[1],cbm_vbm_up[0],SpinUp_gap)
+             procs(proc_str,0,sp='-->>')
+       step_count+=1
+       filename="BAND.dat"
+       proc_str="Writting Band Structure Data to "+ filename +" File ..."
+       procs(proc_str,step_count,sp='-->>')
+       band_data_up=bands.bands[Spin.up]
+       band_data_down=bands.bands[Spin.down]
+       y_data_up=band_data_up.reshape(1,band_data_up.shape[0]*band_data_up.shape[1])[0]-vsr.efermi #shift fermi level to 0
+       y_data_down=band_data_down.reshape(1,band_data_down.shape[0]*band_data_down.shape[1])[0]-vsr.efermi #shift fermi level to 0
+       x_data=np.array(bands.distance*band_data_up.shape[0])
+       data=np.vstack((x_data,y_data_up,y_data_down)).T
+       head_line="#%(key1)+12s%(key2)+13s%(key3)+15s"%{'key1':'K-Distance','key2':'UpEnergy(ev)','key3':'DownEnergy(ev)'}
+       write_col_data(filename,data,head_line,band_data_up.shape[1])
  
-   else:
-      if vsr.parameters['LNONCOLLINEAR']:
-         proc_str="This Is a Non-Collinear Calculation."
-      else:
-          proc_str="This Is a Non-Spin Calculation."
-      procs(proc_str,0,sp='-->>')
-      cbm=bands.get_cbm()['energy']
-      vbm=bands.get_vbm()['energy']
-      gap=bands.get_band_gap()['energy']
-      if not bands.is_metal():
-         proc_str="This Material Is a Semiconductor."
-         procs(proc_str,0,sp='-->>')
-         proc_str="vbm=%f eV cbm=%f eV gap=%f eV"%(vbm,cbm,gap)
-         procs(proc_str,0,sp='-->>')
-      else:
-         proc_str="This Material Is a Metal."
-         procs(proc_str,0,sp='-->>')
-      
-      step_count+=1
-      filename3="BAND.dat"
-      proc_str="Writting Band Structure Data to "+ filename3 +" File ..."
-      procs(proc_str,step_count,sp='-->>')
-      band_data=bands.bands[Spin.up]
-      y_data=band_data.reshape(1,band_data.shape[0]*band_data.shape[1])[0]-vsr.efermi #shift fermi level to 0
-      x_data=np.array(bands.distance*band_data.shape[0])
-      data=np.vstack((x_data,y_data)).T
-      head_line="#%(key1)+12s%(key2)+13s"%{'key1':'K-Distance','key2':'Energy(ev)'}
-      write_col_data(filename3,data,head_line,band_data.shape[1])
-
-   step_count+=1
-   bsp=BSPlotter(bands)
-   filename4="HighSymmetricPoints.dat"
-   proc_str="Writting Label infomation to "+ filename4 +" File ..."
-   procs(proc_str,step_count,sp='-->>')
-   head_line="#%(key1)+12s%(key2)+12s%(key3)+12s"%{'key1':'index','key2':'label','key3':'position'}
-   line=head_line+'\n'
-   for i,label in enumerate(bsp.get_ticks()['label']):
-       new_line="%(key1)12d%(key2)+12s%(key3)12f\n"%{'key1':i,'key2':label,'key3':bsp.get_ticks()['distance'][i]}
-       line+=new_line
-   line+='\n'
-   write_col_data(filename4,line,'',str_data=True) 
-
-   step_count+=1
-   filename5="BAND.png"
-   proc_str="Saving Plot to "+ filename5 +" File ..."
-   procs(proc_str,step_count,sp='-->>')
-   bsp.save_plot(filename5, img_format="png")
+    else:
+       if vsr.parameters['LNONCOLLINEAR']:
+          proc_str="This Is a Non-Collinear Calculation."
+       else:
+           proc_str="This Is a Non-Spin Calculation."
+       procs(proc_str,0,sp='-->>')
+       cbm=bands.get_cbm()['energy']
+       vbm=bands.get_vbm()['energy']
+       gap=bands.get_band_gap()['energy']
+       if not bands.is_metal():
+          proc_str="This Material Is a Semiconductor."
+          procs(proc_str,0,sp='-->>')
+          proc_str="vbm=%f eV cbm=%f eV gap=%f eV"%(vbm,cbm,gap)
+          procs(proc_str,0,sp='-->>')
+       else:
+          proc_str="This Material Is a Metal."
+          procs(proc_str,0,sp='-->>')
+       
+       step_count+=1
+       filename3="BAND.dat"
+       proc_str="Writting Band Structure Data to "+ filename3 +" File ..."
+       procs(proc_str,step_count,sp='-->>')
+       band_data=bands.bands[Spin.up]
+       y_data=band_data.reshape(1,band_data.shape[0]*band_data.shape[1])[0]-vsr.efermi #shift fermi level to 0
+       x_data=np.array(bands.distance*band_data.shape[0])
+       data=np.vstack((x_data,y_data)).T
+       head_line="#%(key1)+12s%(key2)+13s"%{'key1':'K-Distance','key2':'Energy(ev)'}
+       write_col_data(filename3,data,head_line,band_data.shape[1])
+       step_count+=1
+       bsp=BSPlotter(bands)
+       filename4="HighSymmetricPoints.dat"
+       proc_str="Writting Label infomation to "+ filename4 +" File ..."
+       procs(proc_str,step_count,sp='-->>')
+       head_line="#%(key1)+12s%(key2)+12s%(key3)+12s"%{'key1':'index','key2':'label','key3':'position'}
+       line=head_line+'\n'
+       for i,label in enumerate(bsp.get_ticks()['label']):
+           new_line="%(key1)12d%(key2)+12s%(key3)12f\n"%{'key1':i,'key2':label,'key3':bsp.get_ticks()['distance'][i]}
+           line+=new_line
+       line+='\n'
+       write_col_data(filename4,line,'',str_data=True) 
+    try:
+       step_count+=1
+       filename5="BAND.png"
+       proc_str="Saving Plot to "+ filename5 +" File ..."
+       procs(proc_str,step_count,sp='-->>')
+       bsp.save_plot(filename5, img_format="png")
+    except:
+       print("Figure output fails !!!")   
 
       
 def projected_band_structure():
