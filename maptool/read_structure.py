@@ -16,9 +16,12 @@ def readstructure(crystal=True,molecule=False,filename=None,multi_files=False,ca
 
     if multi_files:
        if crystal:
-          print('input the full file names seperated by space (only POSCAR format)')
-          print('supported format 1: a.vasp b.vasp')
-          print('supported format 2: *.vasp')
+          print('input the full file names seperated by space')
+          print('supported format 1: a.vasp')
+          print('supported format 2: a.cif')
+          print('supported format 3: a.vasp b.vasp')
+          print('supported format 4: *.vasp')
+          print('supported format 5: *.cif')
           structs=[] 
           wait_sep()
           in_str=""
@@ -28,19 +31,30 @@ def readstructure(crystal=True,molecule=False,filename=None,multi_files=False,ca
               fnames=glob.glob(in_str)
           else:
               fnames=in_str.split()
+              #print(fnames)
 
           for fname in fnames:
-              nfname=str(uuid.uuid4())+'_POSCAR'
-              os.symlink(fname,nfname)
-              mpt_log.debug("linke file for %s is %s" % (fname,nfname))
-              fname=nfname
-              struct=MStructure.from_file(fname)
-
-              print(struct)
-              print(type(struct))
+              if 'vasp' in fname:
+                 try:
+                      struct=MStructure.from_file(fname)
+                 except:
+                      nfname=str(uuid.uuid4())+'_POSCAR'
+                      os.symlink(fname,nfname)
+                      mpt_log.debug("linke file for %s is %s" % (fname,nfname))
+                      fname=nfname
+                      struct=MStructure.from_file(fname)
+                      os.unlink(fname)
+              else:
+                  try:
+                      #print(fname)
+                      struct=MStructure.from_file(fname)
+                         
+                  except:
+                      raise Exception("Unknown format")
+              #print(struct)
+              #print(type(struct))
               if cano:
                  struct.canonical_form()
-              os.unlink(fname)
               structs.append(struct)
           return structs,fnames
           

@@ -52,21 +52,26 @@ def covert_operation():
     choice=int(in_str)
     assert choice in [1,2]
     if choice==1:
-       struct=readstructure(crystal=True,molecule=False)
-       print('input the target file name\nremeber including the format sufix')
-       print("supported format: .vasp .xsf .cif .nc .json .yaml ")
+       structs,fnames=readstructure(crystal=True,molecule=False,multi_files=True)
+       print('input the target file format')
+       print("supported format: vasp xsf cif nc json yaml ")
     else:
-       struct=readstructure(crystal=False,molecule=True)
-       print('input the target file name\nremeber including the format sufix')
-       print("supported format: .xyz .mol .nc .json .yaml ")
+       structs,fnames=readstructure(crystal=False,molecule=True,multi_files=True)
+       print('input the target file format')
+       print("supported format: xyz mol nc json yaml ")
          
+    #print(fnames)
     wait_sep()
     in_str=""
     while in_str=="":
        in_str=input().strip()
-    outfile=in_str
-    fmt=outfile.split('.')[-1]
-    struct.to(filename=outfile,fmt=fmt)
+    fmt=in_str
+    for fname,struct in zip(fnames,structs):
+        if fmt=='vasp': 
+            struct.to(filename=fname.replace(fname.split('.')[-1],fmt),fmt='poscar')
+        else:
+            struct.to(filename=fname.replace(fname.split('.')[-1],fmt),fmt=fmt)
+          
 
 def build_operation():
     print('your choice ?')
