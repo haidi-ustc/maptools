@@ -1,4 +1,5 @@
-**docs:** 
+README
+======
 
 
 Maptool is a postprocessing software for VASP code.
@@ -14,4 +15,6 @@ These are some of the main features inherited by Pymatgen:
    diagrams, diffusion analyses, reactions, etc.
 4. Electronic structure analyses, such as density of states and band structure.
 
+MORE
+====
 More details see doc/maptool.md
