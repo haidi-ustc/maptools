@@ -458,7 +458,7 @@ def twoD_operation():
         cart_coords[:,2]=cart_coords[:,2]-tmp_coords.T+0.01
         frac_coords_new=np.dot(cart_coords,np.linalg.inv(struct_sc.lattice.matrix))
         for i_strain in strain_range:
-            new_lat_matrix=struct_sc.lattice.matrix
+            new_lat_matrix=struct_sc.lattice.matrix.copy()
             new_lat_matrix[direction,direction]=struct_sc.lattice.matrix[direction,direction]*(1-i_strain)
             fname="%10.5f"%(i_strain)+'_wo.vasp' # structure only applied with in-plan strain
             struct_wo_ripple=Structure(new_lat_matrix,struct_sc.species,frac_coords_new)
